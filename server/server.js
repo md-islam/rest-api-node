@@ -7,19 +7,40 @@ app.use(express.static('client'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-var lions = [];
-var id = 0;
+var lions = [{id:1, name:"hello"},{id:2, name:"gaggu"}];
+var id = 3;
 
 app.get('/lions', function(req, res){
   res.json(lions);
 });
 
+//Get resource with ID
 app.get('/lions/:id', function(req, res){
-  var lion = _.find(lions, {id: req.params.id});
+  // var lion = _.find(lions, {id: req.params.id});
+  var lion = _.find(lions, {id:parseInt(req.params.id)});
+  console.log(req.params.id)
+  console.log(typeof(req.params.id))
   res.json(lion || {});
 });
 
+//Delete a resource
+app.delete('/lions/:id', function (req, res) {
+  res.send('DELETE request to homepage');
+  var uri_id = parseInt(req.params.id);
+  console.log(uri_id);
+  for(i=0; i<lions.length; i++){
+    if(lions[i].id == uri_id){
+      lions.splice(i, 1);
+      console.log("deleted");
+    }
+  }
+  
+});
+
+
+//Post resource incrementing ID
 app.post('/lions', function(req, res) {
+  console.log(req.body);
   var lion = req.body;
   id++;
   lion.id = id + '';
@@ -29,14 +50,16 @@ app.post('/lions', function(req, res) {
   res.json(lion);
 });
 
-
+//Put/ update a resource using ID
 app.put('/lions/:id', function(req, res) {
   var update = req.body;
+  console.log(update);
   if (update.id) {
+    console.log("insideIf")
     delete update.id
   }
 
-  var lion = _.findIndex(lions, {id: req.params.id});
+  var lion = _.findIndex(lions, {id: parseInt(req.params.id)});
   if (!lions[lion]) {
     res.send();
   } else {
