@@ -28,13 +28,9 @@ app.delete('/lions/:id', function (req, res) {
   res.send('DELETE request to homepage');
   var uri_id = parseInt(req.params.id);
   console.log(uri_id);
-  for(i=0; i<lions.length; i++){
-    if(lions[i].id == uri_id){
-      lions.splice(i, 1);
-      console.log("deleted");
-    }
-  }
-  
+  _.remove(lions, {
+    id: uri_id
+  });
 });
 
 
